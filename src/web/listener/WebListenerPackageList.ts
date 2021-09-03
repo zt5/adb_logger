@@ -1,4 +1,4 @@
-import { ipcRenderer } from "electron";
+import { ipcRenderer, IpcRendererEvent } from "electron";
 import { PackageList } from "../../msg/m2w/PackageList";
 import { MsgObjChannel } from "../../define";
 
@@ -8,7 +8,10 @@ export class WebListenerPackageList {
         this.packElement = <HTMLSelectElement>document.querySelector("#SelectPackage");
         this.setList([]);
 
-        ipcRenderer.on(MsgObjChannel.PackageList, (evt, args: PackageList) => this.setList(args.content, args.select));
+        ipcRenderer.on(MsgObjChannel.PackageList, this.packageListHandler.bind(this));
+    }
+    private packageListHandler(evt: IpcRendererEvent, args: PackageList) {
+        this.setList(args.content, args.select);
     }
     private setList(args: string[], selectValue?: string) {
         this.packElement.options.length = 0;

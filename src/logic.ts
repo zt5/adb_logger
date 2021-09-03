@@ -9,6 +9,7 @@ import { ClearLog } from "./msg/m2w/ClearLog";
 import { Log } from "./msg/m2w/Log";
 import { DeviceList } from "./msg/m2w/DeviceList";
 import { PackageList } from "./msg/m2w/PackageList";
+import * as os from "os";
 
 export class Logic {
     private window: BrowserWindow;
@@ -60,11 +61,17 @@ export class Logic {
         this.logFilePath = this.pathResolve("log.txt");
         fs.writeFileSync(this.logFilePath, "", "utf-8");//清空内容
         this.logNative(`getAppPath: ${app.getAppPath()}`);
-        this.adbZipPath = this.pathResolve("/assets/adb/platform-tools_r31.0.3-windows.zip")
+
+        const [adbZipName, adbExeName] = this.getADBZipName();
+        if (!adbZipName) throw new Error("unsupport platform: " + os.platform());
+
+        this.adbZipPath = this.pathResolve("/assets/adb/" + adbZipName);
         this.logNative(`adbZipPath: ${this.adbZipPath}`);
         this.adbExtractPath = this.pathResolve("/assets/adb");
         this.logNative(`adbExtracPath: ${this.adbExtractPath}`);
-        this.adbExePath = this.pathResolve("/assets/adb/platform-tools/adb.exe");
+
+
+        this.adbExePath = this.pathResolve("/assets/adb/platform-tools/" + adbExeName);
         this.logNative(`adbExePath: ${this.adbExePath}`);
         this.adbCwdPath = this.pathResolve("/assets/adb/platform-tools");
         this.logNative(`adbCwdPath: ${this.adbCwdPath}`);
@@ -72,6 +79,16 @@ export class Logic {
         this.devices = [];
         this.packages = [];
         this.progress = [];
+    }
+    private getADBZipName(): [string, string] {
+        switch (os.platform()) {
+            case "win32":
+                return ["platform-tools_r31.0.3-windows.zip", "adb.exe"];
+            case "darwin":
+                return ["platform-tools_r31.0.3-darwin.zip", "adb"];
+            case "linux":
+                return ["platform-tools_r31.0.3-linux.zip", "adb"];
+        }
     }
     private pathResolve(url: string) {
         if (app.isPackaged) {
@@ -134,7 +151,12 @@ export class Logic {
         for (let i = 0; i < this.packages.length; i++) {
             this.parseProgress(await this.execAdb("-s", this.selectDevice, "shell", "ps", `|grep ${this.packages[i]}`), this.packages[i]);
         }
-        this.logWebView(`选中进程: ${this.progress.find(item => item.NAME == this.selectDevice)}`);
+        let progress = this.progress.find(item => item.NAME == this.selectDevice);
+        if (progress) {
+            this.logWebView(`选中进程: ${progress}`);
+        } else {
+            this.logWebView(`选中进程: 未运行`);
+        }
     }
     private parseProgress(pidstr: string, packageName: string) {
         if (pidstr) {

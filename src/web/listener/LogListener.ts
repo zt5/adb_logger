@@ -10,28 +10,28 @@ export class WebListenerLog {
         this.log = <HTMLDivElement>document.querySelector("#DivLog");
         this.isPress = false;
         this.isLockEnd = true;
-        ipcRenderer.on(MsgObjChannel.Log, this.logHandler)
-        document.onmousedown = this.mouseDownHandler;
-        document.onmouseup = this.mouseUpHandler;
-        document.onmousewheel = this.mouseWhellHandler;
-        ipcRenderer.on(MsgObjChannel.ClearLog, this.clearLogHandler)
+        ipcRenderer.on(MsgObjChannel.Log, this.logHandler.bind(this))
+        document.onmousedown = this.mouseDownHandler.bind(this);
+        document.onmouseup = this.mouseUpHandler.bind(this);
+        document.onmousewheel = this.mouseWhellHandler.bind(this);
+        ipcRenderer.on(MsgObjChannel.ClearLog, this.clearLogHandler.bind(this))
     }
-    private mouseWhellHandler = (ev: MouseEvent) => {
+    private mouseWhellHandler(ev: MouseEvent) {
         this.isLockEnd = this.log.scrollTop + this.log.clientHeight + 20 >= this.log.scrollHeight;
     }
-    private mouseUpHandler = (ev: MouseEvent) => {
+    private mouseUpHandler(ev: MouseEvent) {
         if (this.isPress) {
             this.isPress = false;
             this.isLockEnd = this.log.scrollTop + this.log.clientHeight + 20 >= this.log.scrollHeight;
         }
     }
-    private mouseDownHandler = (ev: MouseEvent) => {
+    private mouseDownHandler(ev: MouseEvent) {
         this.isPress = ev.target == this.log;
     }
-    private clearLogHandler = (evt: IpcRendererEvent, args: ClearLog) => {
+    private clearLogHandler(evt: IpcRendererEvent, args: ClearLog) {
         this.log.removeChild(this.log.firstChild);
     }
-    private logHandler = (evt: IpcRendererEvent, args: Log) => {
+    private logHandler(evt: IpcRendererEvent, args: Log) {
         let msgs = Array.isArray(args.content) ? args.content : [args.content];
         let el: DocumentFragment = document.createDocumentFragment();
         for (let i = 0; i < msgs.length; i++) {

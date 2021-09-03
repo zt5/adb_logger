@@ -1,4 +1,4 @@
-import { ipcRenderer } from "electron";
+import { ipcRenderer, IpcRendererEvent } from "electron";
 import { DeviceList } from "../../msg/m2w/DeviceList";
 import { Device, DeviceState, MsgObjChannel } from "../../define";
 
@@ -8,7 +8,10 @@ export class WebListenerDeviceList {
         this.deviceElement = <HTMLSelectElement>document.querySelector("#SelectDevice");
         this.setList([]);
 
-        ipcRenderer.on(MsgObjChannel.DeviceList, (evt, args: DeviceList) => this.setList(args.content, args.select));
+        ipcRenderer.on(MsgObjChannel.DeviceList, this.deviceListHandler.bind(this));
+    }
+    private deviceListHandler(evt: IpcRendererEvent, args: DeviceList) {
+        this.setList(args.content, args.select);
     }
     private setList(args: Device[], selectValue?: string) {
         this.deviceElement.options.length = 0;
