@@ -1,0 +1,5 @@
+getAppPath: D:\ws\adb_logger\dist
+adbZipPath: D:\ws\adb_logger\assets\adb\platform-tools_r31.0.3-windows.zip
+adbExtracPath: D:\ws\adb_logger\assets\adb
+adbExePath: D:\ws\adb_logger\assets\adb\platform-tools\adb.exe
+adbCwdPath: D:\ws\adb_logger\assets\adb\platform-tools
