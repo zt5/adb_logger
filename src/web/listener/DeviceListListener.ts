@@ -1,6 +1,6 @@
 import { ipcRenderer, IpcRendererEvent } from "electron";
 import { DeviceList } from "../../msg/m2w/DeviceList";
-import { Device, DeviceState, MsgObjChannel } from "../../define";
+import { Device, DeviceState, MsgObjChannel } from "../../typings/define";
 
 export class WebListenerDeviceList {
     private deviceElement: HTMLSelectElement;

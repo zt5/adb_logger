@@ -1,7 +1,7 @@
 import { ipcRenderer, IpcRendererEvent } from "electron";
 import { Log } from "../../msg/m2w/Log";
 import { ClearLog } from "../../msg/m2w/ClearLog";
-import { MsgObjChannel } from "../../define";
+import { MsgObjChannel } from "../../typings/define";
 export class WebListenerLog {
     private isPress = false;
     private isLockEnd = true;
@@ -29,7 +29,7 @@ export class WebListenerLog {
         this.isPress = ev.target == this.log;
     }
     private clearLogHandler(evt: IpcRendererEvent, args: ClearLog) {
-        this.log.removeChild(this.log.firstChild);
+        this.log.innerHTML = "";
     }
     private logHandler(evt: IpcRendererEvent, args: Log) {
         let msgs = Array.isArray(args.content) ? args.content : [args.content];

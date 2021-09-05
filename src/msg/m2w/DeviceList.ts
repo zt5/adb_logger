@@ -1,5 +1,5 @@
-import { Device, MsgObjChannel } from "../../define";
-import { MsgObj } from "../../define";
+import { Device, MsgObjChannel } from "../../typings/define";
+import { MsgObj } from "../../typings/define";
 
 export class DeviceList extends MsgObj {
     public readonly channel = MsgObjChannel.DeviceList;

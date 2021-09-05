@@ -1,3 +1,7 @@
+import * as cp from "child_process";
+export type MyProgress = cp.ChildProcess & {
+    isDestroy?: boolean;
+}
 export abstract class MsgObj {
     public abstract channel: MsgObjChannel;
 }
@@ -14,17 +18,14 @@ export enum DeviceState {
     NoDevice = "no device",
 }
 export type Progress = {
-    USER: string;
     PID: number;
-    PPID: number;
-    VSIZE: number;
-    RSS: number;
-    WCHAN: string;
-    PC: string;
-    NAME_PROGRESS: string;
     NAME: string;
 }
 export type Device = {
     state: DeviceState;
     serialNumber: string;
+}
+export type Package = {
+    progress?: Progress;
+    name: string;
 }

@@ -1,7 +1,7 @@
-import { MsgObjChannel } from "../../define";
-import { MsgObj } from "../../define";
+import { MsgObjChannel, Package } from "../../typings/define";
+import { MsgObj } from "../../typings/define";
 
 export class PackageList extends MsgObj {
     public readonly channel = MsgObjChannel.PackageList;
-    constructor(public content: string[], public select: string) { super(); }
+    constructor(public content: Package[], public select: string) { super(); }
 }

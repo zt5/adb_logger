@@ -5,7 +5,7 @@
   "scripts": {
     "build": "tsc",
     "start": "npm run build && electron ./dist/main.js",
-    "package_begin":"rd /s /q \"./assets/adb/portable\"",
+    "package_begin": "rd /s /q \"./assets/adb/portable\"",
     "package": "electron-packager . --platform=win32 --icon=./icon.ico --overwrite --ignore=\"/(src|README\\.md|LICENSE\\.md|tsconfig\\.json|log\\.txt|icon\\.ico|\\.gitignore|\\.eslintrc)\""
   },
   "main": "dist/main.js",
@@ -28,6 +28,7 @@
   },
   "dependencies": {
     "adm-zip": "^0.5.5",
-    "iconv-lite": "^0.6.3"
+    "iconv-lite": "^0.6.3",
+    "tree-kill": "^1.2.2"
   }
 }
