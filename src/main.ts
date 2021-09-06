@@ -1,16 +1,15 @@
 
 import { app, BrowserWindow } from "electron";
 import * as path from "path";
-import { MsgObj } from "./typings/define";
-import { Logger } from "./logger/Logger";
-import { Logic } from "./logic";
-
+import { Logger } from "./logic/Logger";
+import { App } from "./logic/App";
+import { Immortal } from "./msg/Immortal";
 
 export let appWin: BrowserWindow;
 export let appLogger = new Logger();
+export let immortal = new Immortal();
+export let myApp = new App();
 
-
-let logic = new Logic();
 async function createWindow() {
   appWin = new BrowserWindow({
     height: 600,
@@ -21,7 +20,7 @@ async function createWindow() {
     width: 800,
   });
   appWin.loadFile(path.join(__dirname, "../assets/html/index.html"));
-  logic.init();
+  myApp.init();
 }
 app.on("ready", () => {
   createWindow();

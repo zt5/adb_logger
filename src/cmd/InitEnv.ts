@@ -1,16 +1,14 @@
 import os = require("os");
+import fs = require("fs");
 import * as AdmZip from "adm-zip";
 import { appLogger } from "../main";
-import { Util } from "../Util";
-import { ActionBase } from "./ActionBase";
-import fs = require("fs");
+import { Util } from "../logic/Util";
+import { Runner } from "../logic/Runner";
 
-export class ActionInitAdb extends ActionBase {
-    public async exec() {
+export class InitEnv extends Runner {
+    public async run() {
         const [adbZipName, adbExeName] = this.getADBZipName();
         if (!adbZipName || !adbExeName) throw new Error("unsupport platform: " + os.platform());
-        this.context.adbZipName = adbZipName;
-        this.context.adbExeName = adbExeName;
         this.context.adbZipPath = Util.pathResolve("/assets/adb/" + adbZipName);
         appLogger.log(`adbZipPath: ${this.context.adbZipPath}`);
         this.context.adbExtractPath = Util.pathResolve("/assets/adb");

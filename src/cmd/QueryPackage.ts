@@ -1,64 +1,66 @@
-import { Package, Progress } from "../typings/define";
-import { ActionBase } from "./ActionBase";
+import { Runner } from "../logic/Runner";
+import { Package, PackageProgress } from "../msg/MsgStruct";
 
-export class ActionQueryPackage extends ActionBase {
-    public async query() {
+export class QueryPackage extends Runner {
+    public async run() {
         this.context.packages = [];
-        const { context } = this;
-        const { actAdbCmd } = context;
-        
-        if (!context.selectDevice) return;
+        if (!this.context.selectDevice) return;
 
-        this.parsePackage(await actAdbCmd.exec(
+
+        this.parsePackage(await this.context.adb.run(
             "-s",
-            context.selectDevice,
+            this.context.selectDevice,
             "shell",
             "pm",
             "list",
             "packages",
             "-3"
         ));
-        for (let i = 0; i < context.packages.length; i++) {
-            const curPackage = context.packages[i];
-            curPackage.progress = this.parseProgress(await actAdbCmd.exec(
-                "-s",
-                context.selectDevice,
-                "shell",
-                "ps",
-                `|grep ${curPackage.name}`,
-                "|awk '{print $2,$9}'"
-            ), curPackage.name);
+
+
+        let progressArr: PackageProgress[] = this.parseProgress(await this.context.adb.run(
+            "-s",
+            this.context.selectDevice,
+            "shell",
+            "ps",
+            "|",
+            "grep",
+            "-E",
+            `"${this.context.packages.map(item => item.name).join("|")}"`,
+            "|",
+            "awk",
+            "'{print $2,$9}'"
+        ));
+
+        for (let i = 0; i < this.context.packages.length; i++) {
+            const curPackage = this.context.packages[i];
+            curPackage.progress = progressArr.find(item => item.NAME == curPackage.name);
         }
     }
-    private parseProgress(pidstr: string, packageName: string) {
+    private parseProgress(pidstr: string) {
+        let progressArr: PackageProgress[] = [];
         if (pidstr) {
             let strs = pidstr.trim().split("\r\n").map(item => item.trim()).filter(item => item);
             if (strs.length) {
                 for (let i = 0; i < strs.length; i++) {
                     const progressStr = strs[i].split(/\s+/).map(item => item.trim());
-                    if (progressStr.length) {
-                        let progress = <Progress>{};
+                    if (progressStr.length == 2) {
+                        let progress = <PackageProgress>{};
                         progress.PID = +progressStr[0];
                         progress.NAME = progressStr[1];
-                        if (progress.NAME == packageName) {
-                            return progress;
-                        }
+                        progressArr.push(progress);
                     }
                 }
             }
         }
-        return null;
+        return progressArr;
     }
     public getPackageByName(name: string) {
+        if (!this.context.packages) return undefined;
         return this.context.packages.find(item => item.name == name);
     }
-    public selectDefaultPackage() {
-
-        if (this.context.selectPackage == null) {
-            if (this.context.packages.length) {
-                this.context.selectPackage = this.context.packages[0].name;
-            }
-        } else {
+    public selectDefault() {
+        if (!this.context.selectPackage == null) {
             let hasPrevPackage = false;
             for (let i = 0; i < this.context.packages.length; i++) {
                 if (this.context.packages[i].name == this.context.selectPackage) {

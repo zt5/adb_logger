@@ -1,5 +1,4 @@
-import { MsgObjChannel } from "../../typings/define";
-import { MsgObj } from "../../typings/define";
+import { MsgObj, MsgObjChannel } from "../../typings/define";
 
 export class Log extends MsgObj {
     public readonly channel = MsgObjChannel.Log;

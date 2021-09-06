@@ -1,8 +1,9 @@
 import { ipcRenderer, IpcRendererEvent } from "electron";
-import { DeviceList } from "../../msg/m2w/DeviceList";
-import { Device, DeviceState, MsgObjChannel } from "../../typings/define";
+import { MsgObjChannel } from "../../../typings/define";
+import { DeviceList } from "../../m2w/DeviceList";
+import { Device, DeviceState } from "../../MsgStruct";
 
-export class WebListenerDeviceList {
+export class ListenerDeviceList {
     private deviceElement: HTMLSelectElement;
     public listen() {
         this.deviceElement = <HTMLSelectElement>document.querySelector("#SelectDevice");
@@ -39,6 +40,13 @@ export class WebListenerDeviceList {
             }
         } else {
             this.deviceElement.disabled = true;
+            let option = <HTMLOptionElement>document.createElement("option");
+            option.value = "";
+            option.selected = true;
+            option.disabled = true;
+            option.hidden = true;
+            option.label = "未连接设备";
+            this.deviceElement.appendChild(option);
         }
     }
 }

@@ -1,13 +1,11 @@
-// All of the Node.js APIs are available in the preload process.
+import { ListenerDeviceList } from "./msg/listener/web/ListenerDeviceList";
+import { ListenerLog } from "./msg/listener/web/ListenerLog";
+import { ListenerMask } from "./msg/listener/web/ListenerMask";
+import { ListenerPackageList } from "./msg/listener/web/ListenerPackageList";
 
-import { WebListenerDeviceList } from "./web/listener/DeviceListListener";
-import { WebListenerLog } from "./web/listener/LogListener";
-import { WebListenerPackageList } from "./web/listener/WebListenerPackageList";
-
-
-// It has the same sandbox as a Chrome extension.
 window.addEventListener("DOMContentLoaded", () => {
-  new WebListenerDeviceList().listen();
-  new WebListenerLog().listen();
-  new WebListenerPackageList().listen();
+  new ListenerDeviceList().listen();
+  new ListenerLog().listen();
+  new ListenerPackageList().listen();
+  new ListenerMask().listen();
 });

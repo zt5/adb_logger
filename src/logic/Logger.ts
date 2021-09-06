@@ -1,5 +1,5 @@
-import { Util } from "../Util";
 import fs = require("fs");
+import { Util } from "./Util";
 export class Logger {
     private readonly logWriteQueue: string[];
     private readonly logFilePath: string;
@@ -13,13 +13,7 @@ export class Logger {
     public log(...args: any[]) {
         for (let i = 0; i < args.length; i++) {
             let arg = args[i];
-            if (arg instanceof Error) {
-                this.logWriteQueue.push(`${arg.message}\n${arg.stack}\n`);
-            } else if (arg instanceof Object) {
-                this.logWriteQueue.push(`${JSON.stringify(arg)}\n`);
-            } else {
-                this.logWriteQueue.push(`${arg}\n`);
-            }
+            this.logWriteQueue.push(`${Util.convertObjStr(arg)}\n`);
         }
         this.checkQueue();
     }
@@ -28,7 +22,7 @@ export class Logger {
         this.checkQueueTimer = setInterval(() => {
             if (this.logWriteQueue.length) {
                 let str = this.logWriteQueue.shift();
-                console.log(str);
+                // console.log(str);
                 fs.writeFileSync(this.logFilePath, str, { encoding: "utf-8", flag: "a" })
             } else {
                 clearInterval(this.checkQueueTimer);

@@ -1,14 +1,12 @@
-import { appLogger } from "../main";
-import { DeviceState } from "../typings/define";
-import { ActionBase } from "./ActionBase";
-import { AppContext } from "./AppContext";
+import { AppContext } from "../logic/AppContext";
+import { Runner } from "../logic/Runner";
+import { DeviceState } from "../msg/MsgStruct";
 
-export class ActionQueryDevice extends ActionBase {
-    public async query() {
+export class QueryDevice extends Runner {
+    public async run() {
         this.context.devices = [];
-        const deviceStr = await this.context.actAdbCmd.exec("devices");
+        const deviceStr = await this.context.adb.run("devices");
         this.parseDevice(deviceStr, this.context);
-
     }
     private parseDevice(queryDevices: string, context: AppContext) {
         const logs = queryDevices.split("\r\n")
@@ -22,9 +20,10 @@ export class ActionQueryDevice extends ActionBase {
         }
     }
     public getDeviceByName(name: string) {
+        if (!this.context.devices) return undefined;
         return this.context.devices.find(item => item.serialNumber == name);
     }
-    public selectDefaultDevice() {
+    public selectDefault() {
         if (this.context.selectDevice == null) {
             if (this.context.devices.length) {
                 this.context.selectDevice = this.context.devices[0].serialNumber;

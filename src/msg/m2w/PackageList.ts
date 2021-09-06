@@ -1,5 +1,5 @@
-import { MsgObjChannel, Package } from "../../typings/define";
-import { MsgObj } from "../../typings/define";
+import { MsgObj, MsgObjChannel } from "../../typings/define";
+import { Package } from "../MsgStruct";
 
 export class PackageList extends MsgObj {
     public readonly channel = MsgObjChannel.PackageList;

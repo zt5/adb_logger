@@ -1,8 +1,8 @@
 import { ipcRenderer, IpcRendererEvent } from "electron";
-import { Log } from "../../msg/m2w/Log";
-import { ClearLog } from "../../msg/m2w/ClearLog";
-import { MsgObjChannel } from "../../typings/define";
-export class WebListenerLog {
+import { MsgObjChannel } from "../../../typings/define";
+import { ClearLog } from "../../m2w/ClearLog";
+import { Log } from "../../m2w/Log";
+export class ListenerLog {
     private isPress = false;
     private isLockEnd = true;
     private log: HTMLDivElement;
