@@ -1,6 +1,6 @@
 import * as cp from "child_process";
 import { appLogger, immortal } from "../main";
-import { MyProgress } from "../typings/define";
+import { MyProgress, PackageAll } from "../typings/define";
 import { Util } from "../logic/Util";
 import { Runner } from "../logic/Runner";
 
@@ -15,7 +15,7 @@ export class Logcat extends Runner {
             "logcat",
             "--format=time"
         ];
-        if (this.context.selectPackage) {
+        if (this.context.selectPackage && this.context.selectPackage != PackageAll) {
             const selPackage = this.context.queryPackage.getPackageByName(this.context.selectPackage);
             if (!selPackage || !selPackage.progress) return;
             args.push(`--pid=${selPackage.progress.PID}`);

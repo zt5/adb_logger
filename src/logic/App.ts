@@ -6,7 +6,7 @@ import { QueryDevice } from "../cmd/QueryDevice";
 import { QueryPackage } from "../cmd/QueryPackage";
 import { Logcat } from "../cmd/Logcat";
 import { AppContext } from "./AppContext";
-import { immortal } from "../main";
+import { appLogger, immortal } from "../main";
 import { ListenerPackageChange } from "../msg/listener/native/ListenerPackageChange";
 import { DeviceList } from "../msg/m2w/DeviceList";
 import { PackageList } from "../msg/m2w/PackageList";
@@ -91,6 +91,7 @@ export class App implements AppContext {
         this.queryPackage.selectDefault()
 
         immortal.logWebView(`选中包名: ${this.selectPackage}`);
+        appLogger.log("this.packages: " + this.packages)
         immortal.cmdToWebview(new PackageList(this.packages, this.selectPackage));
 
         immortal.clearLog();

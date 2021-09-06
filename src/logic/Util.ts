@@ -3,7 +3,8 @@ import * as iconv from "iconv-lite";
 import * as os from "os";
 import * as path from "path";
 import * as treekill from "tree-kill";
-import { MyProgress } from "../typings/define";
+import { Device, Package } from "../msg/MsgStruct";
+import { MyProgress, PackageAll } from "../typings/define";
 
 export class Util {
     public static pathResolve(url: string) {
@@ -37,15 +38,17 @@ export class Util {
         return iconv.decode(Buffer.from(str, "binary"), "utf-8");
     }
     public static convertObjStr(msg: string | number | boolean | Error | unknown) {
-		if (typeof msg == "string") return msg;
-		else if (typeof msg == "number") return `${msg}`;
-		else if (typeof msg == "boolean") return `${msg}`;
-		else if (msg instanceof Error) {
-			if (msg.stack) return msg.stack;
-			else return msg.message;
-		}
-		else if (msg === null || msg === undefined) return `${msg}`;
-		else return JSON.stringify(msg);
-	}
-
+        if (typeof msg == "string") return msg;
+        else if (typeof msg == "number") return `${msg}`;
+        else if (typeof msg == "boolean") return `${msg}`;
+        else if (msg instanceof Error) {
+            if (msg.stack) return msg.stack;
+            else return msg.message;
+        }
+        else if (msg === null || msg === undefined) return `${msg}`;
+        else return JSON.stringify(msg);
+    }
+    public static fillAllPackage(devices: Package[]) {
+        devices.push({ name: PackageAll });
+    }
 }

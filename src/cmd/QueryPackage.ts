@@ -1,11 +1,11 @@
 import { Runner } from "../logic/Runner";
 import { Package, PackageProgress } from "../msg/MsgStruct";
+import { InitPackage, PackageAll } from "../typings/define";
 
 export class QueryPackage extends Runner {
     public async run() {
-        this.context.packages = [];
+        this.context.packages = InitPackage();
         if (!this.context.selectDevice) return;
-
 
         this.parsePackage(await this.context.adb.run(
             "-s",
@@ -16,8 +16,7 @@ export class QueryPackage extends Runner {
             "packages",
             "-3"
         ));
-
-
+        const progressFilter = this.context.packages.map(item => item.name).filter(name => name != PackageAll).join("|")
         let progressArr: PackageProgress[] = this.parseProgress(await this.context.adb.run(
             "-s",
             this.context.selectDevice,
@@ -26,7 +25,7 @@ export class QueryPackage extends Runner {
             "|",
             "grep",
             "-E",
-            `"${this.context.packages.map(item => item.name).join("|")}"`,
+            `"${progressFilter}"`,
             "|",
             "awk",
             "'{print $2,$9}'"
@@ -60,7 +59,7 @@ export class QueryPackage extends Runner {
         return this.context.packages.find(item => item.name == name);
     }
     public selectDefault() {
-        if (!this.context.selectPackage == null) {
+        if (this.context.selectPackage != null) {
             let hasPrevPackage = false;
             for (let i = 0; i < this.context.packages.length; i++) {
                 if (this.context.packages[i].name == this.context.selectPackage) {
@@ -70,13 +69,16 @@ export class QueryPackage extends Runner {
             }
             if (!hasPrevPackage) this.context.selectPackage = null;
         }
+        if (this.context.selectPackage == null) this.context.selectPackage = PackageAll;
     }
     private parsePackage(queryPackages: string) {
-        this.context.packages = queryPackages
+        const packages = queryPackages
             .split("\r\n")
             .map(item => item.trim().split(":")[1])
             .filter(item => item)
             .sort()
             .map(item => (<Package>{ name: item }));
+
+        this.context.packages.push(...packages);
     }
 }
