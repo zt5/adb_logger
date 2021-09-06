@@ -42,7 +42,11 @@ export class App implements AppContext {
             label: '刷新设备',
             accelerator: 'CmdOrCtrl+Y',
             click: () => {
-                this.update();
+                if (!this.devices || this.devices.length == 0) {
+                    this.restartServer();
+                } else {
+                    this.update();
+                }
             }
         }
     ];
@@ -80,15 +84,15 @@ export class App implements AppContext {
         immortal.mask(true);
         await this.queryDevice.run();
         this.queryDevice.selectDefault()
-        
+
         immortal.cmdToWebview(new DeviceList(this.devices, this.selectDevice));
-        
+
         await this.queryPackage.run();
         this.queryPackage.selectDefault()
-        
+
         immortal.logWebView(`选中包名: ${this.selectPackage}`);
         immortal.cmdToWebview(new PackageList(this.packages, this.selectPackage));
-        
+
         immortal.clearLog();
         await this.clearAdb.run();
         await this.logcat.run();
