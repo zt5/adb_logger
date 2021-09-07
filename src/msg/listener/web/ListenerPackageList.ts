@@ -23,7 +23,6 @@ export class ListenerPackageList {
     private setList(args: Package[], selectValue?: string) {
         this.packElement.options.length = 0;
         this.packElement.disabled = args.length == 1 && args[0].name == PackageAll;
-        console.log(args, selectValue);
         for (let i = 0; i < args.length; i++) {
             let option = <HTMLOptionElement>document.createElement("option");
             if (args[i].name == selectValue) option.selected = true;

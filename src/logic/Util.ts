@@ -3,7 +3,7 @@ import * as iconv from "iconv-lite";
 import * as os from "os";
 import * as path from "path";
 import * as treekill from "tree-kill";
-import { Device, Package } from "../msg/MsgStruct";
+import { Package } from "../msg/MsgStruct";
 import { MyProgress, PackageAll } from "../typings/define";
 
 export class Util {
@@ -13,6 +13,12 @@ export class Util {
         } else {
             return path.resolve(path.join(app.getAppPath(), "../", url));
         }
+    }
+    public static dataPath() {
+        return Util.pathResolve("/cache");
+    }
+    public static logPath() {
+        return path.join(app.getPath("temp"), "/adb_logger/");
     }
     public static killProgress(progress: MyProgress) {
         if (!progress || progress.isDestroy) return;

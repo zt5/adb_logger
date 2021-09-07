@@ -1,5 +1,6 @@
-import os = require("os");
-import fs = require("fs");
+import * as path from "path";
+import * as os from "os";
+import * as fs from "fs";
 import * as AdmZip from "adm-zip";
 import { appLogger } from "../main";
 import { Util } from "../logic/Util";
@@ -11,11 +12,11 @@ export class InitEnv extends Runner {
         if (!adbZipName || !adbExeName) throw new Error("unsupport platform: " + os.platform());
         this.context.adbZipPath = Util.pathResolve("/assets/adb/" + adbZipName);
         appLogger.log(`adbZipPath: ${this.context.adbZipPath}`);
-        this.context.adbExtractPath = Util.pathResolve("/assets/adb");
+        this.context.adbExtractPath = path.join(Util.dataPath(), "/assets/adb");
         appLogger.log(`adbExtracPath: ${this.context.adbExtractPath}`);
-        this.context.adbExePath = Util.pathResolve("/assets/adb/platform-tools/" + adbExeName);
+        this.context.adbExePath = path.join(this.context.adbExtractPath, "/platform-tools/", adbExeName);
         appLogger.log(`adbExePath: ${this.context.adbExePath}`);
-        this.context.adbCwdPath = Util.pathResolve("/assets/adb/platform-tools");
+        this.context.adbCwdPath = path.join(Util.dataPath(), "/assets/adb/platform-tools");
         appLogger.log(`adbCwdPath: ${this.context.adbCwdPath}`);
         await this.checkAdb();
     }

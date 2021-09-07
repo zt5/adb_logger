@@ -1,0 +1,42 @@
+html,
+body {
+    width: 100%;
+    height: 100%;
+}
+
+html,
+body,
+div {
+    padding: 0;
+    margin: 0;
+}
+
+.colBox {
+    display: flex;
+    flex-direction: column;
+}
+
+.rowBox {
+    display: flex;
+    flex-direction: row;
+}
+
+.logItem:hover {
+    background-color: bisque;
+}
+
+#DivMask {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#DivLog {
+    overflow: auto;
+    word-wrap: break-word;
+    word-break: break-all;
+}

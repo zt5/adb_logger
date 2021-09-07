@@ -27,20 +27,21 @@ export class Logcat extends Runner {
         if (this.progress.stderr) this.progress.stderr.on('data', this.errorFun);
         this.progress.on('exit', this.exitFun);
     }
-    private exitFun = () => {
+    private exitFun = (code: number) => {
+        appLogger.adbLog(`exit: ${code}`);
         if (this.progress.isDestroy) return;
         this.progress.isDestroy = true;
     }
     private errorFun = (data: any) => {
         if (this.progress.isDestroy) return;
         let logdata = Util.bin2String(data);
-        appLogger.log(`adb logcat: ${logdata}`);
+        appLogger.adbLog(logdata);
         immortal.logWebView(logdata.split("\r\n"));
     }
     private progressFun = (data: any) => {
         if (this.progress.isDestroy) return;
         let logdata = Util.bin2Utf8String(data);
-        appLogger.log(`adb logcat: ${logdata}`);
+        appLogger.adbLog(logdata);
         immortal.logWebView(logdata.split("\r\n"));
     }
     public async destroy() {

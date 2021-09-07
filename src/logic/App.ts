@@ -1,4 +1,4 @@
-import { Menu } from "electron";
+import { Menu, shell } from "electron";
 import { Adb } from "../cmd/Adb";
 import { ClearAdbLog } from "../cmd/ClearAdbLog";
 import { InitEnv } from "../cmd/InitEnv";
@@ -11,17 +11,23 @@ import { ListenerPackageChange } from "../msg/listener/native/ListenerPackageCha
 import { DeviceList } from "../msg/m2w/DeviceList";
 import { PackageList } from "../msg/m2w/PackageList";
 import { Device, Package } from "../msg/MsgStruct";
+import { Util } from "./Util";
 
 export class App implements AppContext {
     private template: Electron.MenuItemConstructorOptions[] = [
         {
-            label: '切换开发者工具',
-            accelerator: 'CmdOrCtrl+I',
-            role: "toggleDevTools"
-        }, {
-            label: '重新加载',
-            accelerator: 'CmdOrCtrl+R',
-            role: "reload"
+            label: '工具',
+            submenu: [
+                {
+                    label: '切换开发者工具',
+                    accelerator: 'CmdOrCtrl+I',
+                    role: "toggleDevTools"
+                }, {
+                    label: '重新加载',
+                    accelerator: 'CmdOrCtrl+R',
+                    role: "reload"
+                },
+            ]
         }, {
             label: '重启adb服务器',
             accelerator: 'CmdOrCtrl+Q',
@@ -48,6 +54,12 @@ export class App implements AppContext {
                     this.update();
                 }
             }
+        }, {
+            label: "打开日志目录",
+            accelerator: 'CmdOrCtrl+O',
+            click: () => {
+                shell.openPath(Util.logPath());
+            }
         }
     ];
     public devices: Device[];
@@ -66,15 +78,14 @@ export class App implements AppContext {
     public adbCwdPath?: string;
 
 
-    public init() {
+    public async init() {
         immortal.mask(true);
         const menu = Menu.buildFromTemplate(this.template)
         Menu.setApplicationMenu(menu)
-
         this.initListener();
         this.initContext();
-        this.initEnv.run();
-        this.update();
+        await this.initEnv.run();
+        await this.update();
         immortal.mask(false);
     }
     private initListener() {
@@ -100,9 +111,9 @@ export class App implements AppContext {
         immortal.mask(false);
     }
     private initContext() {
+        this.initEnv = new InitEnv(this);
         this.adb = new Adb(this);
         this.queryDevice = new QueryDevice(this);
-        this.initEnv = new InitEnv(this);
         this.queryPackage = new QueryPackage(this);
         this.logcat = new Logcat(this);
         this.clearAdb = new ClearAdbLog(this);
