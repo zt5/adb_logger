@@ -76,6 +76,7 @@ export class App implements AppContext {
     public adbExtractPath?: string;
     public adbExePath?: string;
     public adbCwdPath?: string;
+    public adbPageIndex?: number;
 
 
     public async init() {
@@ -84,6 +85,7 @@ export class App implements AppContext {
         Menu.setApplicationMenu(menu)
         this.initListener();
         this.initContext();
+        this.adbPageIndex = 0;
         await this.initEnv.run();
         await this.update();
         immortal.mask(false);
@@ -100,7 +102,6 @@ export class App implements AppContext {
 
         await this.queryPackage.run();
         this.queryPackage.selectDefault()
-
         immortal.logWebView(`选中包名: ${this.selectPackage}`);
         appLogger.log("this.packages: " + this.packages)
         immortal.cmdToWebview(new PackageList(this.packages, this.selectPackage));

@@ -7,6 +7,7 @@ import { Package } from "../msg/MsgStruct";
 import { MyProgress, PackageAll } from "../typings/define";
 
 export class Util {
+    public static readonly AppStartTime = new Date().getTime();
     public static pathResolve(url: string) {
         if (app.isPackaged) {
             return path.join(app.getAppPath(), url);
@@ -19,6 +20,12 @@ export class Util {
     }
     public static logPath() {
         return path.join(app.getPath("temp"), "/adb_logger/");
+    }
+    public static logAdbPath() {
+        return path.join(this.logPath(), `app_${Util.AppStartTime}.log`);
+    }
+    public static logAppPath() {
+        return path.join(this.logPath(), `adb_${Util.AppStartTime}.log`);
     }
     public static killProgress(progress: MyProgress) {
         if (!progress || progress.isDestroy) return;

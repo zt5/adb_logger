@@ -38,6 +38,9 @@ export interface AppContext {
     //adb执行环境路径
     adbCwdPath?: string,
 
+    //adb日志的当前页码
+    adbPageIndex?:number;
+
     //更新方法
     update: () => Promise<void>;
 

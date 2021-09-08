@@ -3,22 +3,17 @@ import * as path from "path";
 import { Util } from "./Util";
 export class Logger {
     private readonly logWriteQueue: { url: LogStream, content: string }[];
-    private readonly logFilePath: string;
     private readonly logAppPath: LogStream;
     private readonly logAdbPath: LogStream;
     private isWriting: boolean;
     constructor() {
         this.isWriting = false;
         this.logWriteQueue = [];
-        this.logFilePath = Util.logPath();
-        console.log("logFilePath: " + this.logFilePath);
 
-        const time = new Date().getTime();
-
-        this.logAppPath = new LogStream(path.join(this.logFilePath, `app_${time}.log`));
+        this.logAppPath = new LogStream(Util.logAppPath());
         console.log("logAppPath: " + this.logAppPath);
 
-        this.logAdbPath = new LogStream(path.join(this.logFilePath, `adb_${time}.log`));
+        this.logAdbPath = new LogStream(Util.logAdbPath());
         console.log("logAdbPath: " + this.logAdbPath);
     }
     /**App日志打印*/
