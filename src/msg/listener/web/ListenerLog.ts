@@ -102,7 +102,7 @@ export class ListenerLog {
             this.divs[i].innerText = "";
         }
         this.msgs.splice(0, this.msgs.length);
-        this.pagePos.slice(0, this.pagePos.length);
+        this.page.scrollTop = 0;
         this.curSelPageIndex = -1;
     }
     private logHandler(evt: IpcRendererEvent, args: Log) {
