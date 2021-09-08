@@ -5,9 +5,10 @@ import * as path from "path";
 import * as treekill from "tree-kill";
 import { Package } from "../msg/MsgStruct";
 import { MyProgress, PackageAll } from "../typings/define";
+import * as fs from "fs";
 
 export class Util {
-    public static readonly AppStartTime = new Date().getTime();
+    public static readonly AppStartTimeStr = Util.encodeTime(new Date());
     public static pathResolve(url: string) {
         if (app.isPackaged) {
             return path.join(app.getAppPath(), url);
@@ -15,17 +16,28 @@ export class Util {
             return path.resolve(path.join(app.getAppPath(), "../", url));
         }
     }
+    public static decodeTime(str: string) {
+        return new Date(str.replace(/'/g, ":").replace(/@/g, "."));
+    }
+    public static encodeTime(date: Date) {
+        return date.toISOString().replace(/:/g, "'").replace(/\./g, "@")
+    }
+
     public static dataPath() {
-        return Util.pathResolve("/cache");
+        if (app.isPackaged) {
+            return path.join(path.dirname(app.getPath("exe")), "/cache/");
+        } else {
+            return Util.pathResolve("/cache");
+        }
     }
     public static logPath() {
-        return path.join(app.getPath("temp"), "/adb_logger/");
-    }
-    public static logAdbPath() {
-        return path.join(this.logPath(), `app_${Util.AppStartTime}.log`);
+        return path.join(Util.dataPath(), "/log/");
     }
     public static logAppPath() {
-        return path.join(this.logPath(), `adb_${Util.AppStartTime}.log`);
+        return path.join(this.logPath(), `app_${Util.AppStartTimeStr}.log`);
+    }
+    public static logAdbPath() {
+        return path.join(this.logPath(), `adb_${Util.AppStartTimeStr}.log`);
     }
     public static killProgress(progress: MyProgress) {
         if (!progress || progress.isDestroy) return;
@@ -64,4 +76,15 @@ export class Util {
     public static fillAllPackage(devices: Package[]) {
         devices.push({ name: PackageAll });
     }
+    public static loopFile(file: string, fileFun: (file: string) => void) {
+        let state = fs.statSync(file);
+        if (state.isDirectory()) {
+            let dirs = fs.readdirSync(file);
+            for (let i = 0; i < dirs.length; i++) {
+                this.loopFile(path.join(file, dirs[i]), fileFun);
+            }
+        } else {
+            fileFun(file);
+        }
+    };
 }

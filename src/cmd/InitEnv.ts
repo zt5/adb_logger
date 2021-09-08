@@ -25,7 +25,7 @@ export class InitEnv extends Runner {
             if (fs.existsSync(this.context.adbExePath)) {
                 resolve();
             } else {
-                var zip = new AdmZip(this.context.adbZipPath);
+                var zip = new AdmZip(fs.readFileSync(this.context.adbZipPath));
                 zip.extractAllToAsync(this.context.adbExtractPath, true, err => {
                     if (err) {
                         reject(err);

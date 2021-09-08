@@ -20,7 +20,9 @@ async function createWindow() {
     width: 800,
   });
   appWin.loadFile(path.join(__dirname, "../assets/html/index.html"));
-  myApp.init();
+  myApp.init().catch(err => {
+    appLogger.log(err);
+  })
 }
 app.on("ready", () => {
   createWindow();

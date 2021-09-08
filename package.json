@@ -1,11 +1,11 @@
 {
   "name": "adb_logger",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "安卓日志查看",
   "scripts": {
     "build": "tsc",
     "start": "npm run build && electron ./dist/main.js",
-    "package": "electron-packager . --platform=win32 --icon=./icon.ico --overwrite --asar --ignore=\"/(src|README\\.md|LICENSE\\.md|tsconfig\\.json|log\\.txt|icon\\.ico|\\.gitignore|\\.eslintrc)\""
+    "package": "npm run build && electron-packager . --platform=win32 --icon=./icon.ico --overwrite --asar --ignore=\"/(src|README\\.md|LICENSE\\.md|tsconfig\\.json|log\\.txt|icon\\.ico|\\.gitignore|\\.eslintrc)\""
   },
   "main": "dist/main.js",
   "repository": "https://github.com/zt5/adb_logger",

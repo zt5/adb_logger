@@ -10,6 +10,18 @@ export class Logger {
         this.isWriting = false;
         this.logWriteQueue = [];
 
+        const nowTime = new Date();
+        Util.loopFile(Util.logPath(), file => {
+            let time = Util.decodeTime(file);
+            if (time.getTime() + 86400 < nowTime.getTime()) {
+                fs.unlink(file, err => {
+                    if (err) {
+                        console.error(err);
+                    }
+                });
+            }
+        })
+
         this.logAppPath = new LogStream(Util.logAppPath());
         console.log("logAppPath: " + this.logAppPath);
 

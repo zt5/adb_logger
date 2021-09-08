@@ -9,7 +9,7 @@ export class ListenerLog {
     private page: HTMLSelectElement;
     private msgs: string[];
     private divs: HTMLDivElement[];
-    private readonly ONE_PAGE_NUM = 50;
+    private readonly ONE_PAGE_NUM = 200;
     private curSelPageIndex: number;
     public listen() {
         this.log = <HTMLDivElement>document.querySelector("#DivLog");
